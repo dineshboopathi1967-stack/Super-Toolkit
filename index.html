@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDFify - Premium Image to PDF Converter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <header>
+            <div class="logo">
+                <i class="fa-solid fa-layer-group"></i>
+                <h1>ToolKit</h1>
+            </div>
+            <p>Your premium tool suite for image conversion and compression.</p>
+
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="pdf-mode"><i class="fa-solid fa-file-pdf"></i> PDF
+                    Converter</button>
+                <button class="tab-btn" data-tab="compress-mode"><i class="fa-solid fa-compress"></i> Image
+                    Compressor</button>
+                <button class="tab-btn" data-tab="pdf-compress-mode"><i class="fa-solid fa-file-zipper"></i> PDF
+                    Compressor</button>
+                <button class="tab-btn" data-tab="word-mode"><i class="fa-solid fa-file-word"></i> Word to PDF</button>
+                <button class="tab-btn" data-tab="pdf-word-mode"><i class="fa-solid fa-file-export"></i> PDF to
+                    Word</button>
+                <button class="tab-btn" data-tab="pdf-translate-mode"><i class="fa-solid fa-language"></i> Doc
+                    Translator</button>
+                <button class="tab-btn" data-tab="text-pdf-mode"><i class="fa-solid fa-file-signature"></i> Text to PDF</button>
+                <button class="tab-btn" data-tab="image-text-mode"><i class="fa-solid fa-file-lines"></i> Image to Text</button>
+                <button class="tab-btn" data-tab="text-image-mode"><i class="fa-solid fa-image"></i> Text to Image</button>
+                <button class="tab-btn" data-tab="invert-image-mode"><i class="fa-solid fa-circle-half-stroke"></i> Invert Image</button>
+                <button class="tab-btn" data-tab="pdf-text-mode"><i class="fa-solid fa-file-text"></i> PDF to Text</button>
+                <button class="tab-btn" data-tab="word-text-mode"><i class="fa-solid fa-file-word"></i> Word to Text</button>
+                <button class="tab-btn" data-tab="merge-pdf-mode"><i class="fa-solid fa-layer-group"></i> Merge PDF</button>
+                <button class="tab-btn" data-tab="split-pdf-mode"><i class="fa-solid fa-scissors"></i> Split PDF</button>
+                <button class="tab-btn" data-tab="watermark-pdf-mode"><i class="fa-solid fa-stamp"></i> Watermark</button>
+                <button class="tab-btn" data-tab="pdf-jpg-mode"><i class="fa-regular fa-file-image"></i> PDF to JPG</button>
+                <button class="tab-btn" data-tab="rotate-pdf-mode"><i class="fa-solid fa-rotate-right"></i> Rotate PDF</button>
+                <button class="tab-btn" data-tab="page-numbers-mode"><i class="fa-solid fa-list-ol"></i> Page Numbers</button>
+                <button class="tab-btn" data-tab="html-pdf-mode"><i class="fa-brands fa-html5"></i> HTML to PDF</button>
+            </div>
+        </header>
+
+        <main>
+            <!-- Image Tools Panel -->
+            <div id="image-tools-panel">
+                <section class="upload-section" id="upload-zone">
+                    <div class="upload-content">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <h2>Drag & Drop your images here</h2>
+                        <p>or</p>
+                        <label for="file-input" class="btn-primary">Browse Files</label>
+                        <input type="file" id="file-input" multiple
+                            accept="image/png, image/jpeg, image/jpg, image/webp">
+                        <p class="formats">Supports JPG, PNG, WEBP</p>
+                    </div>
+                </section>
+
+                <section class="preview-section hidden" id="preview-section">
+                    <div class="section-header">
+                        <h3><i class="fa-solid fa-images"></i> Selected Images</h3>
+                        <span class="image-count" id="image-count">0 images</span>
+                    </div>
+                    <p class="drag-hint"><i class="fa-solid fa-arrows-up-down-left-right"></i> Drag to reorder</p>
+                    <div class="image-grid" id="image-grid">
+                        <!-- Images will be injected here -->
+                    </div>
+                    <div class="settings-bar hidden" id="compressor-settings">
+                        <label for="compression-level"><i class="fa-solid fa-compress"></i> Compression:</label>
+                        <select id="compression-level" class="form-select">
+                            <option value="none">Original (No Compression)</option>
+                            <option value="low">Low (Good Quality)</option>
+                            <option value="medium" selected>Medium (Recommended)</option>
+                            <option value="high">High (Small File)</option>
+                            <option value="custom">Custom Target Size</option>
+                        </select>
+
+                        <div id="custom-kb-container" class="hidden custom-kb-wrap">
+                            <label for="target-kb-input">Target per image:</label>
+                            <input type="number" id="target-kb-input" class="form-input" min="10" max="10000"
+                                value="50">
+                            <span>KB</span>
+                        </div>
+                    </div>
+
+                    <div class="action-bar">
+                        <button class="btn-secondary" id="add-more-images-btn"><i class="fa-solid fa-plus"></i> Add More</button>
+                        <button class="btn-secondary" id="clear-all-btn"><i class="fa-solid fa-trash-can"></i> Clear
+                            All</button>
+                        <div class="custom-kb-wrap" style="margin: 0;">
+                            <input type="text" id="output-filename-input" class="form-input"
+                                style="width: 140px; text-align: left;" placeholder="Filename">
+                        </div>
+                        <div id="pdf-actions">
+                            <button class="btn-primary" id="generate-pdf-btn"><i
+                                    class="fa-solid fa-wand-magic-sparkles"></i> Generate PDF</button>
+                        </div>
+                        <div id="compress-actions" class="hidden">
+                            <button class="btn-primary" id="compress-download-btn"><i class="fa-solid fa-download"></i>
+                                Download Images</button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- PDF Tools Panel -->
+            <div id="pdf-tools-panel" class="hidden">
+                <section class="upload-section" id="pdf-upload-zone">
+                    <div class="upload-content">
+                        <i class="fa-solid fa-file-pdf"></i>
+                        <h2>Drag & Drop your PDF here</h2>
+                        <p>or</p>
+                        <label for="pdf-file-input" class="btn-primary">Browse PDF</label>
+                        <input type="file" id="pdf-file-input" accept="application/pdf">
+                        <p class="formats">Supports PDF only</p>
+                    </div>
+                </section>
+
+                <section class="preview-section hidden" id="pdf-preview-section">
+                    <div class="pdf-info-card">
+                        <h3><i class="fa-solid fa-file-lines"></i> <span id="pdf-filename">document.pdf</span></h3>
+                        <p class="pdf-size">Original Size: <span id="pdf-original-size">0 KB</span></p>
+                    </div>
+
+                    <div class="settings-bar"
+                        style="justify-content: center; margin-top: 1.5rem; margin-bottom: 0.5rem;">
+                        <div class="custom-kb-wrap" style="margin: 0;">
+                            <label for="pdf-target-kb-input">Target Size:</label>
+                            <input type="number" id="pdf-target-kb-input" class="form-input" min="50" max="50000"
+                                value="500">
+                            <span>KB</span>
+                        </div>
+                    </div>
+
+                    <div class="action-bar">
+                        <button class="btn-secondary" id="pdf-clear-btn"><i class="fa-solid fa-trash-can"></i>
+                            Remove</button>
+                        <div class="custom-kb-wrap" style="margin: 0;">
+                            <input type="text" id="pdf-output-filename-input" class="form-input"
+                                style="width: 140px; text-align: left;" placeholder="Filename">
+                        </div>
+                        <button class="btn-primary" id="compress-pdf-btn"><i
+                                class="fa-solid fa-wand-magic-sparkles"></i> Compress PDF</button>
+                    </div>
+                </section>
+            </div>
+
+            <!-- PDF to Word Tools Panel -->
+            <div id="pdf-word-tools-panel" class="hidden">
+                <section class="upload-section" id="pdf-word-upload-zone">
+                    <div class="upload-content">
+                        <i class="fa-solid fa-file-pdf"></i>
+                        <h2>Drag & Drop your PDF here</h2>
+                        <p>or</p>
+                        <label for="pdf-word-file-input" class="btn-primary">Browse PDF</label>
+                        <input type="file" id="pdf-word-file-input" accept="application/pdf">
+                        <p class="formats">Supports PDF</p>
+                    </div>
+                </section>
+
+                <section class="preview-section hidden" id="pdf-word-preview-section">
+                    <div class="pdf-info-card">
+                        <h3><i class="fa-solid fa-file-pdf"></i> <span id="pdf-word-filename">document.pdf</span></h3>
+                        <p class="pdf-size">Original Size: <span id="pdf-word-original-size">0 KB</span></p>
+                    </div>
+
+                    <div class="action-bar">
+                        <button class="btn-secondary" id="pdf-word-clear-btn"><i class="fa-solid fa-trash-can"></i>
+                            Remove</button>
+                        <div class="custom-kb-wrap" style="margin: 0;">
+                            <input type="text" id="pdf-word-output-filename-input" class="form-input"
+                                style="width: 140px; text-align: left;" placeholder="Filename">
+                        </div>
+                        <button class="btn-primary" id="convert-pdf-word-btn"><i class="fa-solid fa-file-word"></i>
+                            Convert to Word</button>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Word Tools Panel -->
+            <div id="word-tools-panel" class="hidden">
+                <section class="upload-section" id="word-upload-zone">
+                    <div class="upload-content">
+                        <i class="fa-solid fa-file-word"></i>
+                        <h2>Drag & Drop your Word file here</h2>
+                        <p>or</p>
+                        <label for="word-file-input" class="btn-primary">Browse Word</label>
+                        <input type="file" id="word-file-input"
+                            accept=".doc, .docx, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+                        <p class="formats">Supports DOC, DOCX</p>
+                    </div>
+                </section>
+
+                <section class="preview-section hidden" id="word-preview-section">
+                    <div class="pdf-info-card">
+                        <h3><i class="fa-solid fa-file-word"></i> <span id="word-filename">document.docx</span></h3>
+                        <p class="pdf-size">Original Size: <span id="word-original-size">0 KB</span></p>
+                    </div>
+
+                    <div class="action-bar">
+                        <button class="btn-secondary" id="word-clear-btn"><i class="fa-solid fa-trash-can"></i>
+                            Remove</button>
+                        <div class="custom-kb-wrap" style="margin: 0;">
+                            <input type="text" id="word-output-filename-input" class="form-input"
+                                style="width: 140px; text-align: left;" placeholder="Filename">
+                        </div>
+                        <button class="btn-primary" id="convert-word-btn"><i
+                                class="fa-solid fa-wand-magic-sparkles"></i> Convert to PDF</button>
+                    </div>
+                </section>
+
+                <div id="word-render-container"
+                    style="position: absolute; left: -9999px; top: 0; background: white; color: black; padding: 20px; width: 800px; font-family: 'Times New Roman', serif;">
+                </div>
+            </div>
+
+            <!-- PDF Translator Tools Panel -->
+            <div id="pdf-translate-tools-panel" class="hidden">
+                <section class="upload-section" id="pdf-translate-upload-zone">
+                    <div class="upload-content">
+                        <i class="fa-solid fa-language"></i>
+                        <h2>Drag & Drop your Document here to Translate</h2>
+                        <p>or</p>
+                        <label for="pdf-translate-file-input" class="btn-primary">Browse Document</label>
+                        <input type="file" id="pdf-translate-file-input"
+                            accept="application/pdf, .doc, .docx, .xls, .xlsx, .pptx, .txt">
+                        <p class="formats">Supports PDF, Word, Excel, PPT, TXT</p>
+                    </div>
+                </section>
+
+                <section class="preview-section hidden" id="pdf-translate-preview-section">
+                    <div class="pdf-info-card">
+                        <h3><i class="fa-solid fa-file-lines"></i> <span id="pdf-translate-filename">document.pdf</span>
+                        </h3>
+                        <p class="pdf-size">Original Size: <span id="pdf-translate-original-size">0 KB</span></p>
+                    </div>
+
+                    <div class="action-bar" style="flex-wrap: wrap; gap: 15px;">
+                        <button class="btn-secondary" id="pdf-translate-clear-btn"><i class="fa-solid fa-trash-can"></i>
+                            Remove</button>
+
+                        <div class="custom-kb-wrap" style="margin: 0; display: flex; align-items: center; gap: 10px;">
+                            <label for="pdf-translate-lang" style="font-weight: 500;">Target:</label>
+                            <select id="pdf-translate-lang" class="form-select" style="width: auto; padding: 8px;">
+                                <option value="ta">Tamil</option>
+                                <option value="hi">Hindi</option>
+                                <option value="en">English</option>
+                                <option value="te">Telugu</option>
+                                <option value="ml">Malayalam</option>
+                                <option value="kn">Kannada</option>
+                                <option value="es">Spanish</option>
+                                <option value="fr">French</option>
+                                <option value="de">German</option>
+                            </select>
+                        </div>
+
+                        <div class="custom-kb-wrap" style="margin: 0;">
+                            <input type="text" id="pdf-translate-output-filename-input" class="form-input"
+                                style="width: 140px; text-align: left;" placeholder="Filename">
+                        </div>
+                        <button class="btn-primary" id="convert-pdf-translate-btn"><i class="fa-solid fa-language"></i>
+                            Translate Document</button>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Text to PDF Tools Panel -->
+            <div id="text-pdf-tools-panel" class="hidden">
+                <section class="preview-section" id="text-pdf-section" style="display: flex; flex-direction: column; gap: 1rem;">
+                    <div class="section-header">
+                        <h3><i class="fa-solid fa-file-signature"></i> Rich Text to PDF</h3>
+                    </div>
+                    
+                    <div id="editor-container" style="height: 400px; background: white; color: black; border-radius: 0 0 12px 12px;"></div>
+                    
+                    <div class="action-bar" style="margin-top: 0;">
+                        <button class="btn-secondary" id="text-pdf-clear-btn"><i class="fa-solid fa-trash-can"></i> Clear</button>
+                        <div style="display: flex; gap: 10px;">
+                            <div class="custom-kb-wrap" style="margin: 0;">
+                                <input type="text" id="text-pdf-output-filename-input" class="form-input"
+                                    style="width: 140px; text-align: left;" placeholder="Filename">
+                            </div>
+                            <button class="btn-primary" id="convert-text-pdf-btn"><i class="fa-solid fa-file-pdf"></i> Convert</button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Image to Text Tools Panel -->
+            <div id="image-text-tools-panel" class="hidden">
+                <section class="upload-section" id="image-text-upload-zone">
+                    <div class="upload-content">
+                        <i class="fa-solid fa-file-lines"></i>
+                        <h2>Drag & Drop your Image here</h2>
+                        <p>or</p>
+                        <label for="image-text-file-input" class="btn-primary">Browse Image</label>
+                        <input type="file" id="image-text-file-input" accept="image/*">
+                        <p class="formats">Extract text using OCR</p>
+                    </div>
+                </section>
+                <section class="preview-section hidden" id="image-text-preview-section">
+                    <div class="section-header">
+                        <h3><i class="fa-solid fa-file-lines"></i> Extracted Text</h3>
+                    </div>
+                    <textarea id="image-text-output" class="premium-textarea" placeholder="Extracted text will appear here..." readonly></textarea>
+                    <div class="action-bar">
+                        <button class="btn-secondary" id="image-text-clear-btn"><i class="fa-solid fa-trash-can"></i> Clear</button>
+                        <button class="btn-primary" id="image-text-copy-btn"><i class="fa-solid fa-copy"></i> Copy Text</button>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Text to Image Tools Panel -->
+            <div id="text-image-tools-panel" class="hidden">
+                <section class="preview-section" id="text-image-section" style="display: flex; flex-direction: column; gap: 1rem;">
+                    <div class="section-header">
+                        <h3><i class="fa-solid fa-image"></i> Text to Image</h3>
+                    </div>
+                    <textarea id="text-image-input" class="premium-textarea" style="min-height: 150px;" placeholder="Type your text here..."></textarea>
+                    <div class="settings-bar" style="justify-content: center; margin-bottom: 15px; gap: 20px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <label for="text-color-picker">Text Color:</label>
+                            <input type="color" id="text-color-picker" value="#ffffff" style="cursor: pointer;">
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <label for="bg-color-picker">Background:</label>
+                            <input type="color" id="bg-color-picker" value="#3b82f6" style="cursor: pointer;">
+                        </div>
+                    </div>
+                    <div class="action-bar" style="margin-top: 0;">
+                        <button class="btn-secondary" id="text-image-clear-btn"><i class="fa-solid fa-trash-can"></i> Clear</button>
+                        <button class="btn-primary" id="convert-text-image-btn"><i class="fa-solid fa-download"></i> Download Image</button>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Invert Image Tools Panel -->
+            <div id="invert-image-tools-panel" class="hidden">
+                <section class="upload-section" id="invert-image-upload-zone">
+                    <div class="upload-content">
+                        <i class="fa-solid fa-circle-half-stroke"></i>
+                        <h2>Drag & Drop your Image here</h2>
+                        <p>or</p>
+                        <label for="invert-image-file-input" class="btn-primary">Browse Image</label>
+                        <input type="file" id="invert-image-file-input" accept="image/*">
+                    </div>
+                </section>
+                <section class="preview-section hidden" id="invert-image-preview-section">
+                    <div class="section-header">
+                        <h3><i class="fa-solid fa-image"></i> Inverted Preview</h3>
+                    </div>
+                    <div style="display: flex; justify-content: center; margin-bottom: 20px;">
+                        <canvas id="invert-image-canvas" style="max-width: 100%; max-height: 400px; border-radius: 8px; border: 1px solid #e2e8f0;"></canvas>
+                    </div>
+                    <div class="action-bar">
+                        <button class="btn-secondary" id="invert-image-clear-btn"><i class="fa-solid fa-trash-can"></i> Clear</button>
+                        <button class="btn-primary" id="invert-image-download-btn"><i class="fa-solid fa-download"></i> Download Inverted</button>
+                    </div>
+                </section>
+            </div>
+
+            <!-- PDF to Text Tools Panel -->
+            <div id="pdf-text-tools-panel" class="hidden">
+                <section class="upload-section" id="pdf-text-upload-zone">
+                    <div class="upload-content">
+                        <i class="fa-solid fa-file-pdf"></i>
+                        <h2>Drag & Drop your PDF here</h2>
+                        <p>or</p>
+                        <label for="pdf-text-file-input" class="btn-primary">Browse PDF</label>
+                        <input type="file" id="pdf-text-file-input" accept="application/pdf">
+                        <p class="formats">Extract text from PDF</p>
+                    </div>
+                </section>
+                <section class="preview-section hidden" id="pdf-text-preview-section">
+                    <div class="section-header">
+                        <h3><i class="fa-solid fa-file-text"></i> Extracted Text</h3>
+                    </div>
+                    <textarea id="pdf-text-output" class="premium-textarea" placeholder="Extracted text will appear here..." readonly></textarea>
+                    <div class="action-bar">
+                        <button class="btn-secondary" id="pdf-text-clear-btn"><i class="fa-solid fa-trash-can"></i> Clear</button>
+                        <button class="btn-primary" id="pdf-text-copy-btn"><i class="fa-solid fa-copy"></i> Copy Text</button>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Word to Text Tools Panel -->
+            <div id="word-text-tools-panel" class="hidden">
+                <section class="upload-section" id="word-text-upload-zone">
+                    <div class="upload-content">
+                        <i class="fa-solid fa-file-word"></i>
+                        <h2>Drag & Drop your Word file here</h2>
+                        <p>or</p>
+                        <label for="word-text-file-input" class="btn-primary">Browse Word</label>
+                        <input type="file" id="word-text-file-input" accept=".doc, .docx, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+                        <p class="formats">Extract text from Word</p>
+                    </div>
+                </section>
+                <section class="preview-section hidden" id="word-text-preview-section">
+                    <div class="section-header">
+                        <h3><i class="fa-solid fa-file-text"></i> Extracted Text</h3>
+                    </div>
+                    <textarea id="word-text-output" class="premium-textarea" placeholder="Extracted text will appear here..." readonly></textarea>
+                    <div class="action-bar">
+                        <button class="btn-secondary" id="word-text-clear-btn"><i class="fa-solid fa-trash-can"></i> Clear</button>
+                        <button class="btn-primary" id="word-text-copy-btn"><i class="fa-solid fa-copy"></i> Copy Text</button>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Merge PDF Tools Panel -->
+            <div id="merge-pdf-tools-panel" class="hidden">
+                <section class="upload-section" id="merge-pdf-upload-zone">
+                    <div class="upload-content">
+                        <i class="fa-solid fa-layer-group"></i>
+                        <h2>Drag & Drop multiple PDFs here</h2>
+                        <p>or</p>
+                        <label for="merge-pdf-file-input" class="btn-primary">Browse PDFs</label>
+                        <input type="file" id="merge-pdf-file-input" accept="application/pdf" multiple>
+                        <p class="formats">Select 2 or more PDFs to merge</p>
+                    </div>
+                </section>
+                <section class="preview-section hidden" id="merge-pdf-preview-section">
+                    <div class="section-header">
+                        <h3><i class="fa-solid fa-file-pdf"></i> Selected PDFs</h3>
+                        <span class="image-count" id="merge-pdf-count">0 files</span>
+                    </div>
+                    <p class="drag-hint"><i class="fa-solid fa-arrows-up-down"></i> Drag to reorder the merging sequence</p>
+                    <div class="pdf-list-container" id="merge-pdf-list" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+                        <!-- Selected PDFs will be listed here -->
+                    </div>
+                    <div class="action-bar">
+                        <button class="btn-secondary" id="merge-pdf-add-more-btn"><i class="fa-solid fa-plus"></i> Add More</button>
+                        <button class="btn-secondary" id="merge-pdf-clear-btn"><i class="fa-solid fa-trash-can"></i> Clear All</button>
+                        <div class="custom-kb-wrap" style="margin: 0;">
+                            <input type="text" id="merge-pdf-output-filename" class="form-input"
+                                style="width: 140px; text-align: left;" placeholder="Filename" value="Merged_Document">
+                        </div>
+                        <button class="btn-primary" id="merge-pdf-btn"><i class="fa-solid fa-wand-magic-sparkles"></i> Merge PDFs</button>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Split PDF Tools Panel -->
+            <div id="split-pdf-tools-panel" class="hidden">
+                <section class="upload-section" id="split-pdf-upload-zone">
+                    <div class="upload-content">
+                        <i class="fa-solid fa-scissors"></i>
+                        <h2>Drag & Drop your PDF here</h2>
+                        <p>or</p>
+                        <label for="split-pdf-file-input" class="btn-primary">Browse PDF</label>
+                        <input type="file" id="split-pdf-file-input" accept="application/pdf">
+                        <p class="formats">Split or extract pages from PDF</p>
+                    </div>
+                </section>
+                <section class="preview-section hidden" id="split-pdf-preview-section">
+                    <div class="pdf-info-card">
+                        <h3><i class="fa-solid fa-file-pdf"></i> <span id="split-pdf-filename">document.pdf</span></h3>
+                        <p class="pdf-size">Total Pages: <span id="split-pdf-pages-count">0</span></p>
+                    </div>
+                    
+                    <div class="settings-bar" style="justify-content: center; margin-top: 1.5rem; margin-bottom: 0.5rem; gap: 15px;">
+                        <div class="custom-kb-wrap" style="margin: 0; display: flex; align-items: center; gap: 10px;">
+                            <label for="split-pdf-range" style="font-weight: 500;">Page Range:</label>
+                            <input type="text" id="split-pdf-range" class="form-input" style="width: 200px; text-align: left;" placeholder="e.g. 1, 3-5, 8">
+                        </div>
+                    </div>
+                    <p style="text-align: center; color: #64748b; font-size: 0.9rem; margin-bottom: 1.5rem;">Leave empty to split into individual pages, or enter ranges like 1-3, 5, 8-10</p>
+
+                    <div class="action-bar">
+                        <button class="btn-secondary" id="split-pdf-clear-btn"><i class="fa-solid fa-trash-can"></i> Remove</button>
+                        <button class="btn-primary" id="split-pdf-btn"><i class="fa-solid fa-scissors"></i> Extract / Split</button>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Watermark PDF Tools Panel -->
+            <div id="watermark-pdf-tools-panel" class="hidden">
+                <section class="upload-section" id="watermark-pdf-upload-zone">
+                    <div class="upload-content">
+                        <i class="fa-solid fa-stamp"></i>
+                        <h2>Drag & Drop your PDF here</h2>
+                        <p>or</p>
+                        <label for="watermark-pdf-file-input" class="btn-primary">Browse PDF</label>
+                        <input type="file" id="watermark-pdf-file-input" accept="application/pdf">
+                        <p class="formats">Add text watermark to your PDF</p>
+                    </div>
+                </section>
+                <section class="preview-section hidden" id="watermark-pdf-preview-section">
+                    <div class="pdf-info-card">
+                        <h3><i class="fa-solid fa-file-pdf"></i> <span id="watermark-pdf-filename">document.pdf</span></h3>
+                    </div>
+                    
+                    <div class="settings-bar" style="flex-wrap: wrap; justify-content: center; margin-top: 1.5rem; margin-bottom: 1.5rem; gap: 20px;">
+                        <div class="custom-kb-wrap" style="margin: 0; display: flex; align-items: center; gap: 10px;">
+                            <label for="watermark-text" style="font-weight: 500;">Text:</label>
+                            <input type="text" id="watermark-text" class="form-input" style="width: 180px; text-align: left;" placeholder="CONFIDENTIAL" value="CONFIDENTIAL">
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <label for="watermark-color" style="font-weight: 500;">Color:</label>
+                            <input type="color" id="watermark-color" value="#ff0000" style="cursor: pointer; height: 40px; width: 50px; border-radius: 8px; border: 1px solid #e2e8f0; padding: 2px;">
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <label for="watermark-opacity" style="font-weight: 500;">Opacity:</label>
+                            <input type="range" id="watermark-opacity" min="0.1" max="1" step="0.1" value="0.3" style="width: 100px;">
+                        </div>
+                    </div>
+
+                    <div class="action-bar">
+                        <button class="btn-secondary" id="watermark-pdf-clear-btn"><i class="fa-solid fa-trash-can"></i> Remove</button>
+                        <div class="custom-kb-wrap" style="margin: 0;">
+                            <input type="text" id="watermark-pdf-output-filename" class="form-input"
+                                style="width: 140px; text-align: left;" placeholder="Filename" value="Watermarked_PDF">
+                        </div>
+                        <button class="btn-primary" id="watermark-pdf-btn"><i class="fa-solid fa-stamp"></i> Add Watermark</button>
+                    </div>
+                </section>
+            </div>
+
+            <!-- PDF to JPG Tools Panel -->
+            <div id="pdf-jpg-tools-panel" class="hidden">
+                <section class="upload-section" id="pdf-jpg-upload-zone">
+                    <div class="upload-content">
+                        <i class="fa-regular fa-file-image"></i>
+                        <h2>Drag & Drop your PDF here</h2>
+                        <p>or</p>
+                        <label for="pdf-jpg-file-input" class="btn-primary">Browse PDF</label>
+                        <input type="file" id="pdf-jpg-file-input" accept="application/pdf">
+                        <p class="formats">Convert PDF pages into JPG images</p>
+                    </div>
+                </section>
+                <section class="preview-section hidden" id="pdf-jpg-preview-section">
+                    <div class="pdf-info-card">
+                        <h3><i class="fa-solid fa-file-pdf"></i> <span id="pdf-jpg-filename">document.pdf</span></h3>
+                        <p class="pdf-size">Total Pages: <span id="pdf-jpg-pages-count">0</span></p>
+                    </div>
+                    <div class="action-bar">
+                        <button class="btn-secondary" id="pdf-jpg-clear-btn"><i class="fa-solid fa-trash-can"></i> Remove</button>
+                        <button class="btn-primary" id="pdf-jpg-btn"><i class="fa-solid fa-image"></i> Convert to JPG</button>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Rotate PDF Tools Panel -->
+            <div id="rotate-pdf-tools-panel" class="hidden">
+                <section class="upload-section" id="rotate-pdf-upload-zone">
+                    <div class="upload-content">
+                        <i class="fa-solid fa-rotate-right"></i>
+                        <h2>Drag & Drop your PDF here</h2>
+                        <p>or</p>
+                        <label for="rotate-pdf-file-input" class="btn-primary">Browse PDF</label>
+                        <input type="file" id="rotate-pdf-file-input" accept="application/pdf">
+                        <p class="formats">Rotate PDF pages</p>
+                    </div>
+                </section>
+                <section class="preview-section hidden" id="rotate-pdf-preview-section">
+                    <div class="pdf-info-card">
+                        <h3><i class="fa-solid fa-file-pdf"></i> <span id="rotate-pdf-filename">document.pdf</span></h3>
+                    </div>
+                    <div class="settings-bar" style="flex-wrap: wrap; justify-content: center; margin-top: 1.5rem; margin-bottom: 1.5rem; gap: 20px;">
+                        <div class="custom-kb-wrap" style="margin: 0; display: flex; align-items: center; gap: 10px;">
+                            <label for="rotate-angle" style="font-weight: 500;">Rotation:</label>
+                            <select id="rotate-angle" class="form-select" style="width: 150px;">
+                                <option value="90">90° Right</option>
+                                <option value="180">180° Upside Down</option>
+                                <option value="270">90° Left</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="action-bar">
+                        <button class="btn-secondary" id="rotate-pdf-clear-btn"><i class="fa-solid fa-trash-can"></i> Remove</button>
+                        <div class="custom-kb-wrap" style="margin: 0;">
+                            <input type="text" id="rotate-pdf-output-filename" class="form-input"
+                                style="width: 140px; text-align: left;" placeholder="Filename" value="Rotated_PDF">
+                        </div>
+                        <button class="btn-primary" id="rotate-pdf-btn"><i class="fa-solid fa-rotate-right"></i> Rotate PDF</button>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Page Numbers Tools Panel -->
+            <div id="page-numbers-tools-panel" class="hidden">
+                <section class="upload-section" id="page-numbers-upload-zone">
+                    <div class="upload-content">
+                        <i class="fa-solid fa-list-ol"></i>
+                        <h2>Drag & Drop your PDF here</h2>
+                        <p>or</p>
+                        <label for="page-numbers-file-input" class="btn-primary">Browse PDF</label>
+                        <input type="file" id="page-numbers-file-input" accept="application/pdf">
+                        <p class="formats">Add page numbers to your PDF</p>
+                    </div>
+                </section>
+                <section class="preview-section hidden" id="page-numbers-preview-section">
+                    <div class="pdf-info-card">
+                        <h3><i class="fa-solid fa-file-pdf"></i> <span id="page-numbers-filename">document.pdf</span></h3>
+                    </div>
+                    <div class="settings-bar" style="flex-wrap: wrap; justify-content: center; margin-top: 1.5rem; margin-bottom: 1.5rem; gap: 20px;">
+                        <div class="custom-kb-wrap" style="margin: 0; display: flex; align-items: center; gap: 10px;">
+                            <label for="page-number-position" style="font-weight: 500;">Position:</label>
+                            <select id="page-number-position" class="form-select" style="width: 150px;">
+                                <option value="bottom-right">Bottom Right</option>
+                                <option value="bottom-center">Bottom Center</option>
+                                <option value="bottom-left">Bottom Left</option>
+                                <option value="top-right">Top Right</option>
+                                <option value="top-center">Top Center</option>
+                                <option value="top-left">Top Left</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="action-bar">
+                        <button class="btn-secondary" id="page-numbers-clear-btn"><i class="fa-solid fa-trash-can"></i> Remove</button>
+                        <div class="custom-kb-wrap" style="margin: 0;">
+                            <input type="text" id="page-numbers-output-filename" class="form-input"
+                                style="width: 140px; text-align: left;" placeholder="Filename" value="Numbered_PDF">
+                        </div>
+                        <button class="btn-primary" id="page-numbers-btn"><i class="fa-solid fa-list-ol"></i> Add Numbers</button>
+                    </div>
+                </section>
+            </div>
+
+            <!-- HTML to PDF Tools Panel -->
+            <div id="html-pdf-tools-panel" class="hidden">
+                <section class="upload-section" id="html-pdf-upload-zone">
+                    <div class="upload-content">
+                        <i class="fa-brands fa-html5"></i>
+                        <h2>Drag & Drop your HTML file here</h2>
+                        <p>or</p>
+                        <label for="html-pdf-file-input" class="btn-primary">Browse HTML</label>
+                        <input type="file" id="html-pdf-file-input" accept=".html,.htm">
+                        <p class="formats">Convert HTML document to PDF</p>
+                    </div>
+                </section>
+                <section class="preview-section hidden" id="html-pdf-preview-section">
+                    <div class="pdf-info-card">
+                        <h3><i class="fa-brands fa-html5"></i> <span id="html-pdf-filename">document.html</span></h3>
+                    </div>
+                    <div class="action-bar">
+                        <button class="btn-secondary" id="html-pdf-clear-btn"><i class="fa-solid fa-trash-can"></i> Remove</button>
+                        <div class="custom-kb-wrap" style="margin: 0;">
+                            <input type="text" id="html-pdf-output-filename" class="form-input"
+                                style="width: 140px; text-align: left;" placeholder="Filename" value="Converted_HTML">
+                        </div>
+                        <button class="btn-primary" id="html-pdf-btn"><i class="fa-solid fa-file-pdf"></i> Convert to PDF</button>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <footer>
+            <p>Designed with <i class="fa-solid fa-heart"></i> for premium experience</p>
+        </footer>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay hidden" id="loading-overlay">
+        <div class="spinner"></div>
+        <p>Crafting your PDF...</p>
+    </div>
+
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
